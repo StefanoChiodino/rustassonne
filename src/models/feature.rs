@@ -6,7 +6,7 @@ pub enum Feature {
         badge: bool,
         connections: Vec<Direction>,
     },
-    Field { connections: Vec<Direction> }
+    Field { connections: Vec<Direction> },
     Monastery,
     Road { connections: Vec<Direction> },
 }
