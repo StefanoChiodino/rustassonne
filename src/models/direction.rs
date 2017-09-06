@@ -1,5 +1,5 @@
 #[allow(unused)]
-#[derive(Debug, Hash)]
+#[derive(Debug, Hash, Eq, PartialEq)]
 pub enum Direction {
     TopLeft,
     Top,
