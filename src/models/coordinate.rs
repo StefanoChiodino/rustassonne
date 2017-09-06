@@ -1,3 +1,4 @@
+#[derive(PartialEq, Eq)]
 pub struct Coordinate {
     x: i32,
     y: i32,

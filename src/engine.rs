@@ -24,7 +24,13 @@ impl Engine {
         orientation: Orientation)
             -> Result<()>
     {
-        Err(PlacementError::TileAlreadyAtCoordinate)
+        let coord: Coordinate = coordinate.into();
+
+        if coord == [0, 0].into() {
+            Err(PlacementError::TileAlreadyAtCoordinate)
+        } else {
+            Ok(())
+        }
     }
 }
 
@@ -33,10 +39,18 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_engine_cannot_place_on_center_for_first_turn() {
+    fn test_engine_cannot_place_on_center() {
         let engine = Engine::new();
         let result = engine.place_next([0, 0], Orientation::Up);
 
         assert_eq!(result, Err(PlacementError::TileAlreadyAtCoordinate));
+    }
+
+    #[test]
+    fn test_engine_can_place_next_to_center() {
+        let engine = Engine::new();
+        let result = engine.place_next([0, 1], Orientation::Up);
+
+        assert_eq!(result, Ok(()));
     }
 }
