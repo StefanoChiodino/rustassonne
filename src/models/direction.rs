@@ -4,7 +4,7 @@ pub enum Direction {
     TopLeft,
     Top,
     TopRight,
-    
+
     RightTop,
     Right,
     RightBottom,
@@ -15,5 +15,5 @@ pub enum Direction {
 
     LeftBottom,
     Left,
-    LeftTop
+    LeftTop,
 }
