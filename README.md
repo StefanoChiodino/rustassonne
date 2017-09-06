@@ -1,5 +1,8 @@
 # Rustassonne - Carcassonne in Rust
 
+[![Build status](https://ci.appveyor.com/api/projects/status/5erfjgtxvmgd3qmx?svg=true)](https://ci.appveyor.com/project/Draga/rustassonne)
+[![Build Status](https://travis-ci.org/overengineering/rustassonne.svg?branch=master)](https://travis-ci.org/overengineering/rustassonne)
+
 We'll be following these rules to implement the board game Carcassonne in Rust.
 
 ## Entities
