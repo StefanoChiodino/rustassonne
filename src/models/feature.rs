@@ -1,12 +1,13 @@
 use direction::Direction;
+use std::collections::HashSet;
 
 #[derive(Debug)]
 pub enum Feature {
     City {
         badge: bool,
-        connections: Vec<Direction>,
+        connections: HashSet<Direction>,
     },
-    Field { connections: Vec<Direction> },
+    Field { connections: HashSet<Direction> },
     Monastery,
-    Road { connections: Vec<Direction> },
+    Road { connections: HashSet<Direction> },
 }
