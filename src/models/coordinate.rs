@@ -1,7 +1,7 @@
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Debug, Hash)]
 pub struct Coordinate {
-    x: i32,
-    y: i32,
+    pub x: i32,
+    pub y: i32,
 }
 
 impl From<[i32; 2]> for Coordinate {

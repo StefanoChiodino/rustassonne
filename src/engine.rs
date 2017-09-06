@@ -1,21 +1,30 @@
 //! A Service that can play a game of Carcassonne.
 
+use std::collections::HashSet;
+
 use models::orientation::Orientation;
 use models::coordinate::Coordinate;
 
 #[derive(Debug, PartialEq)]
 pub enum PlacementError {
+    NotAdjacent,
     TileAlreadyAtCoordinate,
 }
 
 type Result<T> = ::std::result::Result<T, PlacementError>;
 
 #[derive(Debug)]
-pub struct Engine {}
+pub struct Engine {
+    tiles: HashSet<Coordinate>
+}
 
 impl Engine {
     pub fn new() -> Self {
-        Engine {}
+        let mut tiles: HashSet<Coordinate> = HashSet::new();
+
+        tiles.insert([0, 0].into());
+
+        Engine { tiles: tiles }
     }
 
     pub fn place_next<T: Into<Coordinate>>(
@@ -24,13 +33,26 @@ impl Engine {
         orientation: Orientation)
             -> Result<()>
     {
-        let coord: Coordinate = coordinate.into();
+        let coordinate: Coordinate = coordinate.into();
 
-        if coord == [0, 0].into() {
-            Err(PlacementError::TileAlreadyAtCoordinate)
-        } else {
-            Ok(())
+        if self.tiles.contains(&coordinate) {
+            return Err(PlacementError::TileAlreadyAtCoordinate);
         }
+
+        //////// UNDERENGINEERED
+        //////// TODO: OVERENGINEER
+        let hasAdjecentTiles =
+            self.tiles.contains(&[coordinate.x, coordinate.y - 1].into())
+            || self.tiles.contains(&[coordinate.x, coordinate.y + 1].into())
+            || self.tiles.contains(&[coordinate.x + 1, coordinate.y].into())
+            || self.tiles.contains(&[coordinate.x - 1, coordinate.y].into());
+
+        if !hasAdjecentTiles
+        {
+            return Err(PlacementError::NotAdjacent);
+        }
+        
+        Ok(())
     }
 }
 
@@ -52,5 +74,13 @@ mod test {
         let result = engine.place_next([0, 1], Orientation::Up);
 
         assert_eq!(result, Ok(()));
+    }
+
+    #[test]
+    fn test_engine_cannot_place_with_a_gap() {
+        let engine = Engine::new();
+        let result = engine.place_next([0, 2], Orientation::Up);
+
+        assert_eq!(result, Err(PlacementError::NotAdjacent));
     }
 }
