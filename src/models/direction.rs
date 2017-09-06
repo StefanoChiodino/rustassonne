@@ -1,5 +1,5 @@
-#[allow(dead_code)]
-#[derive(Debug)]
+#[allow(unused)]
+#[derive(Debug, Hash)]
 pub enum Direction {
     TopLeft,
     Top,
