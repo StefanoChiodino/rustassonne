@@ -1,7 +1,19 @@
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum Direction {
-    North,
-    East,
-    South,
-    West,
+    TopLeft,
+    Top,
+    TopRight,
+    
+    RightTop,
+    Right,
+    RightBottom,
+
+    BottomRight,
+    Bottom,
+    BottomLeft,
+
+    LeftBottom,
+    Left,
+    LeftTop
 }
