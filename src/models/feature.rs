@@ -1,6 +1,8 @@
 use direction::Direction;
 use std::collections::HashSet;
 
+/// Game features of a tile used for rule enforcement and score counting.
+/// Althought some features connect, this isn't required.
 #[derive(Debug)]
 pub enum Feature {
     City {
