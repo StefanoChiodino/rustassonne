@@ -4,6 +4,8 @@
 
 mod models;
 mod engine;
+mod placement_error;
+mod rules;
 
 use models::direction;
 

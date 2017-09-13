@@ -4,18 +4,15 @@ use std::collections::HashSet;
 
 use models::orientation::Orientation;
 use models::coordinate::Coordinate;
+use placement_error::PlacementError;
+use rules;
 
-#[derive(Debug, PartialEq)]
-pub enum PlacementError {
-    NotAdjacent,
-    TileAlreadyAtCoordinate,
-}
 
-type Result<T> = ::std::result::Result<T, PlacementError>;
+type Result<T> = ::std::result::Result<T, Vec<PlacementError>>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Engine {
-    tiles: HashSet<Coordinate>,
+    pub tiles: HashSet<Coordinate>,
 }
 
 impl Engine {
@@ -33,23 +30,9 @@ impl Engine {
                                            -> Result<Engine> {
         let coordinate: Coordinate = coordinate.into();
 
-        if self.tiles.contains(&coordinate) {
-            return Err(PlacementError::TileAlreadyAtCoordinate);
-        }
-
-        //////// UNDERENGINEERED
-        //////// TODO: OVERENGINEER
-        let hasAdjecentTiles = self.tiles
-            .contains(&[coordinate.x, coordinate.y - 1].into()) ||
-                               self.tiles
-                                   .contains(&[coordinate.x, coordinate.y + 1].into()) ||
-                               self.tiles
-                                   .contains(&[coordinate.x + 1, coordinate.y].into()) ||
-                               self.tiles
-                                   .contains(&[coordinate.x - 1, coordinate.y].into());
-
-        if !hasAdjecentTiles {
-            return Err(PlacementError::NotAdjacent);
+        let broken_rules = rules::check(&self, &coordinate);
+        if broken_rules.is_err() {
+            return Err(broken_rules.unwrap_err());
         }
 
         let mut new_tiles = self.tiles.clone();
@@ -69,7 +52,8 @@ mod test {
         let engine = Engine::new();
         let result = engine.place_next([0, 0], Orientation::Up);
 
-        assert_eq!(result, Err(PlacementError::TileAlreadyAtCoordinate));
+        assert_eq!(result,
+                   Err(vec![PlacementError::TileAlreadyAtCoordinate, PlacementError::NotAdjacent]));
     }
 
     #[test]
@@ -86,7 +70,7 @@ mod test {
 
         let result = engine.place_next([0, 2], Orientation::Up);
 
-        assert_eq!(result, Err(PlacementError::NotAdjacent));
+        assert_eq!(result, Err(vec![PlacementError::NotAdjacent]));
     }
 
     #[test]
@@ -96,6 +80,6 @@ mod test {
 
         let result = engine.place_next([0, 1], Orientation::Up);
 
-        assert_eq!(result, Err(PlacementError::TileAlreadyAtCoordinate));
+        assert_eq!(result, Err(vec![PlacementError::TileAlreadyAtCoordinate]));
     }
 }
