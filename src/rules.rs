@@ -33,20 +33,20 @@ fn check_tile_already_at_coordinate(engine: &Engine,
 fn check_not_adjecent(engine: &Engine, coordinate: &Coordinate) -> Option<PlacementError> {
     //////// UNDERENGINEERED
     //////// TODO: OVERENGINEER
-    let hasAdjecentTiles = engine
+    let has_adjecent_tiles = engine
         .tiles
         .contains(&[coordinate.x, coordinate.y - 1].into()) ||
-                           engine
-                               .tiles
-                               .contains(&[coordinate.x, coordinate.y + 1].into()) ||
-                           engine
-                               .tiles
-                               .contains(&[coordinate.x + 1, coordinate.y].into()) ||
-                           engine
-                               .tiles
-                               .contains(&[coordinate.x - 1, coordinate.y].into());
+                             engine
+                                 .tiles
+                                 .contains(&[coordinate.x, coordinate.y + 1].into()) ||
+                             engine
+                                 .tiles
+                                 .contains(&[coordinate.x + 1, coordinate.y].into()) ||
+                             engine
+                                 .tiles
+                                 .contains(&[coordinate.x - 1, coordinate.y].into());
 
-    if !hasAdjecentTiles {
+    if !has_adjecent_tiles {
         return Some(PlacementError::NotAdjacent);
     }
 
