@@ -23,7 +23,7 @@ pub fn check(engine: &Engine, coordinate: &Coordinate) -> Result<(), Vec<Placeme
 fn check_tile_already_at_coordinate(engine: &Engine,
                                     coordinate: &Coordinate)
                                     -> Option<PlacementError> {
-    if engine.tiles.contains(&coordinate) {
+    if engine.get_tiles().contains(&coordinate) {
         return Some(PlacementError::TileAlreadyAtCoordinate);
     }
 
@@ -34,16 +34,16 @@ fn check_not_adjecent(engine: &Engine, coordinate: &Coordinate) -> Option<Placem
     //////// UNDERENGINEERED
     //////// TODO: OVERENGINEER
     let has_adjecent_tiles = engine
-        .tiles
+        .get_tiles()
         .contains(&[coordinate.x, coordinate.y - 1].into()) ||
                              engine
-                                 .tiles
+                                 .get_tiles()
                                  .contains(&[coordinate.x, coordinate.y + 1].into()) ||
                              engine
-                                 .tiles
+                                 .get_tiles()
                                  .contains(&[coordinate.x + 1, coordinate.y].into()) ||
                              engine
-                                 .tiles
+                                 .get_tiles()
                                  .contains(&[coordinate.x - 1, coordinate.y].into());
 
     if !has_adjecent_tiles {

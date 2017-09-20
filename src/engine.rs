@@ -12,7 +12,7 @@ type Result<T> = ::std::result::Result<T, Vec<PlacementError>>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Engine {
-    pub tiles: HashSet<Coordinate>,
+    tiles: HashSet<Coordinate>,
 }
 
 impl Engine {
@@ -22,6 +22,11 @@ impl Engine {
         tiles.insert([0, 0].into());
 
         Engine { tiles: tiles }
+    }
+
+    // This will avoid tiles being ever mutable.
+    pub fn get_tiles(&self) -> &HashSet<Coordinate> {
+        &self.tiles
     }
 
     pub fn place_next<T: Into<Coordinate>>(&self,
