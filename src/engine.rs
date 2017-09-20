@@ -81,4 +81,37 @@ mod test {
 
         assert!(new_engine.is_ok());
     }
+
+    #[test]
+    fn test_placing_not_adjectent_returns_error() {
+        let engine = Engine::new();
+
+        let new_engine = engine.place_next([0, 99], Orientation::Up);
+
+        assert!(new_engine.is_err());
+    }
+
+    #[test]
+    fn test_new_has_center_tile() {
+        assert!(Engine::new()
+                    .get_tiles()
+                    .contains(&Coordinate::from([0, 0])));
+    }
+
+    #[test]
+    fn test_new_only_has_single_tile() {
+        assert_eq!(1, Engine::new().get_tiles().len());
+    }
+
+    #[test]
+    fn test_coord_exists_in_tiles_after_place_next() {
+        let engine = Engine::new();
+        let coordinate = Coordinate::from([0, 1]);
+        let new_engine = engine
+            .place_next(coordinate.clone(), Orientation::Up)
+            .unwrap();
+
+        assert!(!engine.get_tiles().contains(&coordinate));
+        assert!(new_engine.get_tiles().contains(&coordinate));
+    }
 }
