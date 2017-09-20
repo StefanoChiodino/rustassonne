@@ -52,3 +52,46 @@ fn check_not_adjecent(engine: &Engine, coordinate: &Coordinate) -> Option<Placem
 
     None
 }
+
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use super::super::models::orientation::*;
+
+    #[test]
+    fn test_engine_cannot_place_on_center() {
+        let engine = Engine::new();
+        let result = check(&engine, &[0, 0].into());
+
+        assert_eq!(result,
+                   Err(vec![PlacementError::TileAlreadyAtCoordinate, PlacementError::NotAdjacent]));
+    }
+
+    #[test]
+    fn test_engine_can_place_next_to_center() {
+        let engine = Engine::new();
+        let result = check(&engine, &[0, 1].into());
+
+        assert_eq!(result.is_ok(), true);
+    }
+
+    #[test]
+    fn test_engine_cannot_place_with_a_gap() {
+        let engine = Engine::new();
+
+        let result = check(&engine, &[0, 2].into());
+
+        assert_eq!(result, Err(vec![PlacementError::NotAdjacent]));
+    }
+
+    #[test]
+    fn test_engine_cannot_place_tiles_in_same_location() {
+        let mut engine = Engine::new();
+        engine = engine.place_next([0, 1], Orientation::Up).unwrap();
+
+        let result = check(&engine, &[0, 1].into());
+
+        assert_eq!(result, Err(vec![PlacementError::TileAlreadyAtCoordinate]));
+    }
+}
