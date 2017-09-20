@@ -1,6 +1,6 @@
 //! A Service that can play a game of Carcassonne.
 
-use std::collections::HashSet;
+use std::collections::HashMap;
 
 use models::orientation::Orientation;
 use models::coordinate::Coordinate;
@@ -11,22 +11,24 @@ use models::tile::Tile;
 
 type Result<T> = ::std::result::Result<T, Vec<PlacementError>>;
 
+type TileMap = HashMap<Coordinate, (Tile, Orientation)>;
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Engine {
-    tiles: HashSet<Coordinate>,
+    tiles: TileMap,
 }
 
 impl Engine {
     pub fn new() -> Self {
-        let mut tiles: HashSet<Coordinate> = HashSet::new();
+        let mut tiles = HashMap::new();
 
-        tiles.insert([0, 0].into());
+        tiles.insert([0, 0].into(), (Tile::new(), Orientation::Up));
 
         Engine { tiles: tiles }
     }
 
     // This will avoid tiles being ever mutable.
-    pub fn get_tiles(&self) -> &HashSet<Coordinate> {
+    pub fn get_tiles(&self) -> &TileMap {
         &self.tiles
     }
 
@@ -52,7 +54,7 @@ impl Engine {
         }
 
         let mut new_tiles = self.tiles.clone();
-        new_tiles.insert(coordinate);
+        new_tiles.insert(coordinate, (tile, orientation));
         let new_engine = Engine { tiles: new_tiles };
 
         Ok(new_engine)
@@ -95,7 +97,7 @@ mod test {
     fn test_new_has_center_tile() {
         assert!(Engine::new()
                     .get_tiles()
-                    .contains(&Coordinate::from([0, 0])));
+                    .contains_key(&Coordinate::from([0, 0])));
     }
 
     #[test]
@@ -111,7 +113,25 @@ mod test {
             .place_next(coordinate.clone(), Orientation::Up)
             .unwrap();
 
-        assert!(!engine.get_tiles().contains(&coordinate));
-        assert!(new_engine.get_tiles().contains(&coordinate));
+        assert!(!engine.get_tiles().contains_key(&coordinate));
+        assert!(new_engine.get_tiles().contains_key(&coordinate));
+    }
+
+    #[test]
+    fn test_tile_exists_in_tiles_after_place() {
+        let engine = Engine::new();
+        let coordinate = Coordinate::from([0, 1]);
+        let tile = Tile::new();
+        let orientation = Orientation::Up;
+
+        let new_engine = engine
+            .place(tile.clone(), coordinate.clone(), orientation.clone())
+            .unwrap();
+
+        let original_contains_tile = engine.get_tiles().contains_key(&coordinate);
+        let new_contained_tile_placement = new_engine.get_tiles().get(&coordinate).unwrap();
+
+        assert!(!original_contains_tile);
+        assert_eq!(new_contained_tile_placement, &(tile, orientation));
     }
 }

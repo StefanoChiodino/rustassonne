@@ -3,7 +3,7 @@ use std::collections::HashSet;
 
 /// Game features of a tile used for rule enforcement and score counting.
 /// Althought some features connect, this isn't required.
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Feature {
     City {
         badge: bool,

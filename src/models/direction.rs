@@ -1,6 +1,6 @@
 /// Represents edges of a Tile where Features connect.
 #[allow(unused)]
-#[derive(Debug, Hash, Eq, PartialEq)]
+#[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub enum Direction {
     TopLeft,
     Top,
