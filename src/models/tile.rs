@@ -5,3 +5,9 @@ use models::feature::Feature;
 pub struct Tile {
     features: Vec<Feature>,
 }
+
+impl Tile {
+    pub fn new() -> Self{
+        Tile{features: vec![]}
+    }
+}

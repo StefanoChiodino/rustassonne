@@ -60,7 +60,7 @@ mod test {
     use super::super::models::orientation::*;
 
     #[test]
-    fn test_engine_cannot_place_on_center() {
+    fn test_rule_cannot_place_on_center() {
         let engine = Engine::new();
         let result = check(&engine, &[0, 0].into());
 
@@ -69,7 +69,7 @@ mod test {
     }
 
     #[test]
-    fn test_engine_can_place_next_to_center() {
+    fn test_rule_can_place_next_to_center() {
         let engine = Engine::new();
         let result = check(&engine, &[0, 1].into());
 
@@ -77,7 +77,7 @@ mod test {
     }
 
     #[test]
-    fn test_engine_cannot_place_with_a_gap() {
+    fn test_rule_cannot_place_with_a_gap() {
         let engine = Engine::new();
 
         let result = check(&engine, &[0, 2].into());
@@ -86,7 +86,7 @@ mod test {
     }
 
     #[test]
-    fn test_engine_cannot_place_tiles_in_same_location() {
+    fn test_rule_cannot_place_tiles_in_same_location() {
         let mut engine = Engine::new();
         engine = engine.place_next([0, 1], Orientation::Up).unwrap();
 

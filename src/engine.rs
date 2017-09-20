@@ -6,6 +6,7 @@ use models::orientation::Orientation;
 use models::coordinate::Coordinate;
 use placement_error::PlacementError;
 use rules;
+use models::tile::Tile;
 
 
 type Result<T> = ::std::result::Result<T, Vec<PlacementError>>;
@@ -33,6 +34,16 @@ impl Engine {
                                            coordinate: T,
                                            orientation: Orientation)
                                            -> Result<Engine> {
+        let next_tile = Tile::new();
+
+        self.place(next_tile, coordinate, orientation)
+    }
+
+    fn place<T: Into<Coordinate>>(&self,
+                                  tile: Tile,
+                                  coordinate: T,
+                                  orientation: Orientation)
+                                  -> Result<Engine> {
         let coordinate: Coordinate = coordinate.into();
 
         let broken_rules = rules::check(&self, &coordinate);
@@ -45,5 +56,29 @@ impl Engine {
         let new_engine = Engine { tiles: new_tiles };
 
         Ok(new_engine)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_can_place_tile() {
+        let engine = Engine::new();
+        let tile = Tile::new();
+
+        let new_engine = engine.place(tile, [0, 1], Orientation::Up);
+
+        assert!(new_engine.is_ok());
+    }
+
+    #[test]
+    fn test_can_place_next_tile() {
+        let engine = Engine::new();
+
+        let new_engine = engine.place_next([0, 1], Orientation::Up);
+
+        assert!(new_engine.is_ok());
     }
 }
