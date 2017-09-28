@@ -11,7 +11,7 @@ use models::tile::Tile;
 
 type Result<T> = ::std::result::Result<T, Vec<PlacementError>>;
 
-type TileMap = HashMap<Coordinate, (Tile, Orientation)>;
+pub type TileMap = HashMap<Coordinate, (Tile, Orientation)>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Engine {
@@ -48,7 +48,8 @@ impl Engine {
                                   -> Result<Engine> {
         let coordinate: Coordinate = coordinate.into();
 
-        let broken_rules = rules::check(&self, &coordinate);
+        let broken_rules = rules::check(self.get_tiles(), &tile, &coordinate, &orientation);
+
         if broken_rules.is_err() {
             return Err(broken_rules.unwrap_err());
         }

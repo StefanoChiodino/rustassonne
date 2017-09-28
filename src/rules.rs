@@ -1,16 +1,19 @@
+use std::collections::HashMap;
+
 use models::coordinate::Coordinate;
-use engine::Engine;
+use models::orientation::Orientation;
+use models::tile::Tile;
 use placement_error::PlacementError;
+use engine::TileMap;
 
-pub fn check(engine: &Engine, coordinate: &Coordinate) -> Result<(), Vec<PlacementError>> {
+pub fn check(board: &TileMap, tile: &Tile, coordinate: &Coordinate, orientation: &Orientation) -> Result<(), Vec<PlacementError>> {
 
-    let checks: Vec<fn(&Engine, &Coordinate) -> Option<PlacementError>> =
+    let checks: Vec<fn(&TileMap, &Coordinate) -> Option<PlacementError>> =
         vec![check_tile_already_at_coordinate, check_not_adjecent];
 
     let broken_rules = checks
         .into_iter()
-        .filter_map(|rule| rule(engine, coordinate))
-        // .filter(|error_option| error_option.is_some())
+        .filter_map(|rule| rule(board, coordinate))
         .collect::<Vec<_>>();
 
     if broken_rules.len() > 0 {
@@ -20,31 +23,23 @@ pub fn check(engine: &Engine, coordinate: &Coordinate) -> Result<(), Vec<Placeme
     }
 }
 
-fn check_tile_already_at_coordinate(engine: &Engine,
+fn check_tile_already_at_coordinate(board: &TileMap,
                                     coordinate: &Coordinate)
                                     -> Option<PlacementError> {
-    if engine.get_tiles().contains_key(&coordinate) {
+    if board.contains_key(&coordinate) {
         return Some(PlacementError::TileAlreadyAtCoordinate);
     }
 
     None
 }
 
-fn check_not_adjecent(engine: &Engine, coordinate: &Coordinate) -> Option<PlacementError> {
+fn check_not_adjecent(board: &TileMap, coordinate: &Coordinate) -> Option<PlacementError> {
     //////// UNDERENGINEERED
     //////// TODO: OVERENGINEER
-    let has_adjecent_tiles = engine
-        .get_tiles()
-        .contains_key(&[coordinate.x, coordinate.y - 1].into()) ||
-                             engine
-                                 .get_tiles()
-                                 .contains_key(&[coordinate.x, coordinate.y + 1].into()) ||
-                             engine
-                                 .get_tiles()
-                                 .contains_key(&[coordinate.x + 1, coordinate.y].into()) ||
-                             engine
-                                 .get_tiles()
-                                 .contains_key(&[coordinate.x - 1, coordinate.y].into());
+    let has_adjecent_tiles = board.contains_key(&[coordinate.x, coordinate.y - 1].into()) ||
+                             board.contains_key(&[coordinate.x, coordinate.y + 1].into()) ||
+                             board.contains_key(&[coordinate.x + 1, coordinate.y].into()) ||
+                             board.contains_key(&[coordinate.x - 1, coordinate.y].into());
 
     if !has_adjecent_tiles {
         return Some(PlacementError::NotAdjacent);
@@ -60,36 +55,49 @@ mod test {
     use super::super::models::orientation::*;
 
     #[test]
-    fn test_rule_can_place_next_to_center() {
-        let engine = Engine::new();
-        let result = check(&engine, &[0, 1].into());
+    fn test_rule_can_place_next_to_tile() {
+        let mut board: TileMap = HashMap::new();
 
-        assert_eq!(result.is_ok(), true);
+        board.insert(Coordinate::from([0, 0]), (Tile::new(), Orientation::Up));
+
+        let next_tile = Tile::new();
+        let next_coordinate = Coordinate::from([0, 1]);
+
+        let result = check(&board, &next_tile, &next_coordinate, &Orientation::Up);
+
+        assert_eq!(result, Ok(()));
     }
 
     #[test]
     fn test_rule_cannot_place_with_a_gap() {
-        let engine = Engine::new();
+        let mut board: TileMap = HashMap::new();
 
-        let result = check(&engine, &[0, 2].into());
+        board.insert(Coordinate::from([0, 0]), (Tile::new(), Orientation::Up));
+
+        let next_tile = Tile::new();
+        let next_coordinate = Coordinate::from([0, 2]);
+
+        let result = check(&board, &next_tile, &next_coordinate, &Orientation::Up);
 
         assert_eq!(result, Err(vec![PlacementError::NotAdjacent]));
     }
 
     #[test]
     fn test_rule_cannot_place_tiles_in_same_location() {
-        let mut engine = Engine::new();
-        engine = engine.place_next([0, 1], Orientation::Up).unwrap();
+        let mut board: TileMap = HashMap::new();
 
-        let result = check(&engine, &[0, 1].into());
+        board.insert(Coordinate::from([0, 0]), (Tile::new(), Orientation::Up));
 
-        assert_eq!(result, Err(vec![PlacementError::TileAlreadyAtCoordinate]));
+        let next_tile = Tile::new();
+        let next_coordinate = Coordinate::from([0, 0]);
+
+        let result = check(&board, &next_tile, &next_coordinate, &Orientation::Up);
+
+        assert!(result.unwrap_err().contains(&PlacementError::TileAlreadyAtCoordinate));
     }
 
+    // TODO: Implement : )
     // #[test]
     // fn test_field_road_field_can_only_connect_to_another_field_road_field() {
-    //     let board = HashMap::new<Coordinate, (Tile, Orientation)>();
-    //     let tile = Tile::new();
-    //     let result = check(&board, Tile::new() (, []))
     // }
 }
