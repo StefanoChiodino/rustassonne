@@ -60,15 +60,6 @@ mod test {
     use super::super::models::orientation::*;
 
     #[test]
-    fn test_rule_cannot_place_on_center() {
-        let engine = Engine::new();
-        let result = check(&engine, &[0, 0].into());
-
-        assert_eq!(result,
-                   Err(vec![PlacementError::TileAlreadyAtCoordinate, PlacementError::NotAdjacent]));
-    }
-
-    #[test]
     fn test_rule_can_place_next_to_center() {
         let engine = Engine::new();
         let result = check(&engine, &[0, 1].into());
@@ -94,4 +85,11 @@ mod test {
 
         assert_eq!(result, Err(vec![PlacementError::TileAlreadyAtCoordinate]));
     }
+
+    // #[test]
+    // fn test_field_road_field_can_only_connect_to_another_field_road_field() {
+    //     let board = HashMap::new<Coordinate, (Tile, Orientation)>();
+    //     let tile = Tile::new();
+    //     let result = check(&board, Tile::new() (, []))
+    // }
 }

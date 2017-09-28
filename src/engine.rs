@@ -134,4 +134,13 @@ mod test {
         assert!(!original_contains_tile);
         assert_eq!(new_contained_tile_placement, &(tile, orientation));
     }
+
+    #[test]
+    fn test_cannot_place_on_center() {
+        let engine = Engine::new();
+        let result = engine.place_next([0, 0], Orientation::Up);
+
+        assert_eq!(result,
+                   Err(vec![PlacementError::TileAlreadyAtCoordinate, PlacementError::NotAdjacent]));
+    }
 }
