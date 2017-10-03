@@ -78,8 +78,9 @@ mod test {
         let next_coordinate = Coordinate::from([0, 2]);
 
         let result = check(&board, &next_tile, &next_coordinate, &Orientation::Up);
+        let err = result.unwrap_err();
 
-        assert_eq!(result, Err(vec![PlacementError::NotAdjacent]));
+        assert!(err.contains(&PlacementError::NotAdjacent), err);
     }
 
     #[test]
@@ -92,8 +93,9 @@ mod test {
         let next_coordinate = Coordinate::from([0, 0]);
 
         let result = check(&board, &next_tile, &next_coordinate, &Orientation::Up);
+        let err = result.unwrap_err();
 
-        assert!(result.unwrap_err().contains(&PlacementError::TileAlreadyAtCoordinate));
+        assert!(err.contains(&PlacementError::TileAlreadyAtCoordinate), err);
     }
 
     // TODO: Implement : )
