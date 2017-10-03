@@ -11,7 +11,7 @@ use models::tile::Tile;
 
 type Result<T> = ::std::result::Result<T, Vec<PlacementError>>;
 
-type TileMap = HashMap<Coordinate, (Tile, Orientation)>;
+pub type TileMap = HashMap<Coordinate, (Tile, Orientation)>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Engine {
@@ -48,7 +48,8 @@ impl Engine {
                                   -> Result<Engine> {
         let coordinate: Coordinate = coordinate.into();
 
-        let broken_rules = rules::check(&self, &coordinate);
+        let broken_rules = rules::check(self.get_tiles(), &tile, &coordinate, &orientation);
+
         if broken_rules.is_err() {
             return Err(broken_rules.unwrap_err());
         }
@@ -133,5 +134,14 @@ mod test {
 
         assert!(!original_contains_tile);
         assert_eq!(new_contained_tile_placement, &(tile, orientation));
+    }
+
+    #[test]
+    fn test_cannot_place_on_center() {
+        let engine = Engine::new();
+        let result = engine.place_next([0, 0], Orientation::Up);
+
+        assert_eq!(result,
+                   Err(vec![PlacementError::TileAlreadyAtCoordinate, PlacementError::NotAdjacent]));
     }
 }
