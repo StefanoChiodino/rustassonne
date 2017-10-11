@@ -7,11 +7,11 @@ use models::coordinate::Coordinate;
 use placement_error::PlacementError;
 use rules;
 use models::tile::Tile;
-
+use std::rc::Rc;
 
 type Result<T> = ::std::result::Result<T, Vec<PlacementError>>;
 
-pub type TileMap = HashMap<Coordinate, (Tile, Orientation)>;
+pub type TileMap = HashMap<Coordinate, (Rc<Tile>, Orientation)>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Engine {
@@ -22,7 +22,7 @@ impl Engine {
     pub fn new() -> Self {
         let mut tiles = HashMap::new();
 
-        tiles.insert([0, 0].into(), (Tile::new(), Orientation::Up));
+        tiles.insert([0, 0].into(), (Rc::new(Tile::new()), Orientation::Up));
 
         Engine { tiles: tiles }
     }
@@ -55,7 +55,7 @@ impl Engine {
         }
 
         let mut new_tiles = self.tiles.clone();
-        new_tiles.insert(coordinate, (tile, orientation));
+        new_tiles.insert(coordinate, (Rc::new(tile), orientation));
         let new_engine = Engine { tiles: new_tiles };
 
         Ok(new_engine)
