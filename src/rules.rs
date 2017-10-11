@@ -6,7 +6,11 @@ use models::tile::Tile;
 use placement_error::PlacementError;
 use engine::TileMap;
 
-pub fn check(board: &TileMap, tile: &Tile, coordinate: &Coordinate, orientation: &Orientation) -> Result<(), Vec<PlacementError>> {
+pub fn check(board: &TileMap,
+             tile: &Tile,
+             coordinate: &Coordinate,
+             orientation: &Orientation)
+             -> Result<(), Vec<PlacementError>> {
 
     let checks: Vec<fn(&TileMap, &Coordinate) -> Option<PlacementError>> =
         vec![check_tile_already_at_coordinate, check_not_adjecent];
@@ -34,6 +38,10 @@ fn check_tile_already_at_coordinate(board: &TileMap,
 }
 
 fn check_not_adjecent(board: &TileMap, coordinate: &Coordinate) -> Option<PlacementError> {
+    if board.len() == 0 {
+        return None;
+    }
+
     //////// UNDERENGINEERED
     //////// TODO: OVERENGINEER
     let has_adjecent_tiles = board.contains_key(&[coordinate.x, coordinate.y - 1].into()) ||

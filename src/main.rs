@@ -6,6 +6,8 @@ mod models;
 mod engine;
 mod placement_error;
 mod rules;
+mod tile_factory;
+mod standard_tile_factory;
 
 use models::direction;
 
