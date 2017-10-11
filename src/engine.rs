@@ -27,7 +27,7 @@ impl Engine {
     }
 
     pub fn new_with_tile_pool(tile_pool: Vec<Tile>) -> Self {
-        let mut tiles = HashMap::new();
+        let tiles = HashMap::new();
 
         Engine {
             board: tiles,

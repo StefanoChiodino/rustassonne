@@ -38,7 +38,7 @@ fn check_tile_already_at_coordinate(board: &TileMap,
 }
 
 fn check_not_adjecent(board: &TileMap, coordinate: &Coordinate) -> Option<PlacementError> {
-    if (board.len() == 0) {
+    if board.len() == 0 {
         return None;
     }
 
